@@ -11,7 +11,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
     console.log(`we're connected!`)
 });
-console.log('developing')
+
 mongoose.Promise = global.Promise
 //for logging
 app.use(morgan('dev'))
