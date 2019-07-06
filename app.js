@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const productRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
-mongoose.connect('mongodb+srv://prashant_jain:prashant_jain@node-rest-shop-fuyj9.mongodb.net/node-rest-shop-test?retryWrites=true&w=majority',{ useNewUrlParser: true },{useMongoClient: true})
+mongoose.connect('mongodb+srv://prashant_jain:prashant_jain@node-rest-shop-fuyj9.mongodb.net/node-rest-shop-test?retryWrites=true&w=majority',{ useNewUrlParser: true })
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
