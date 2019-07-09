@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const Joi = require('@hapi/joi');
 const Product = require('../models/product')
 const mongoose = require('mongoose')
 router.get('/',(req,res,next) => {
@@ -38,6 +39,28 @@ router.get('/',(req,res,next) => {
 })
 
 router.post('/',(req,res,next) => {
+    const rules = Joi.object().keys({
+        name: Joi.string().alphanum().min(3).max(30).required(),
+        price : Joi.number().required(),
+    })
+
+    const {error, value} = Joi.validate(req.body, rules, {abortEarly : false})
+    if(error){
+        console.log(value)
+        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        console.log(error['details'])
+        var o = {} // empty Object
+        var key = 'Input error';
+        o[key] = [];
+        for(var i = 0; i < error['details'].length;i++){
+            console.log(error['details'][i]['message'])
+            o[key].push(error['details'][i]['message'])
+        }
+        console.log(o[key])
+        res.json(o[key])
+    }else{
+        console.log('validation passed')
+    }
     const product = new Product({
         _id : mongoose.Types.ObjectId(),
         name : req.body.name,
@@ -60,7 +83,7 @@ router.post('/',(req,res,next) => {
             })
         })
         .catch(err => {
-            console.log(err)
+            // console.log(err)
             res.status(500).json({
                 error : err
             })
