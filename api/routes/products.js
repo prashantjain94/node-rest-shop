@@ -42,22 +42,29 @@ router.post('/',(req,res,next) => {
     const rules = Joi.object().keys({
         name: Joi.string().alphanum().min(3).max(30).required(),
         price : Joi.number().required(),
+        details: Joi.object({
+            size : Joi.number().required()
+        }).required(),
+        details1: Joi.object({
+            size : Joi.number().required()
+        }).required(),
     })
 
     const {error, value} = Joi.validate(req.body, rules, {abortEarly : false})
     if(error){
         console.log(value)
+        var e1=[]
+        var e2=[]
         console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>')
         console.log(error['details'])
-        var o = {} // empty Object
-        var key = 'Input error';
-        o[key] = [];
         for(var i = 0; i < error['details'].length;i++){
             console.log(error['details'][i]['message'])
-            o[key].push(error['details'][i]['message'])
+            e1.push(error['details'][i]['path'])
+            e1.push(error['details'][i]['message'])
+           
         }
-        console.log(o[key])
-        res.json(o[key])
+        console.log(e2)
+       
     }else{
         console.log('validation passed')
     }
