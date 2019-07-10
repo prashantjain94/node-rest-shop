@@ -39,40 +39,43 @@ router.get('/',(req,res,next) => {
 })
 
 router.post('/',(req,res,next) => {
-    const rules = Joi.object().keys({
-        name: Joi.string().alphanum().min(3).max(30).required(),
-        price : Joi.number().required(),
-        details: Joi.object({
-            size : Joi.number().required()
-        }).required(),
-        details1: Joi.object({
-            size : Joi.number().required()
-        }).required(),
-    })
+    // const rules = Joi.object().keys({
+    //     name: Joi.string().alphanum().min(3).max(30).required(),
+    //     price : Joi.number().required(),
+    //     details: Joi.object({
+    //         size : Joi.number().required()
+    //     }).required(),
+        // details1: Joi.object({
+        //     size : Joi.number().required()
+        // }).required(),
+    //     details1 :Joi.array().items({
+    //         name: Joi.string().required(),
+    //         age: Joi.number().required()
+    //     }).required()
 
-    const {error, value} = Joi.validate(req.body, rules, {abortEarly : false})
-    if(error){
-        console.log(value)
-        var e1=[]
-        var e2=[]
-        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>')
-        console.log(error['details'])
-        for(var i = 0; i < error['details'].length;i++){
-            console.log(error['details'][i]['message'])
-            e1.push(error['details'][i]['path'])
-            e1.push(error['details'][i]['message'])
-           
-        }
-        console.log(e2)
-       
-    }else{
-        console.log('validation passed')
-    }
+    // })
+
+    // const {error, value} = Joi.validate(req.body, rules, {abortEarly : false})
+    // if(error){
+    //     console.log(value)
+    //     var data = []
+    //     console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    //     console.log(error['details'])
+    //     const errors = {}
+
+    //     error.details.map(error => {
+    //         errors[error.path.join('.')] = error.message
+    //         return null
+    //     })
+        
+    //     console.log(errors)
+    // }else{
+    //     console.log('validation passed')
+    // }
     const product = new Product({
         _id : mongoose.Types.ObjectId(),
         name : req.body.name,
         price : req.body.price
-
     })
     product
         .save()
