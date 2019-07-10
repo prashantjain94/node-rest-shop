@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const Joi = require('@hapi/joi');
 const Product = require('../models/product')
 const mongoose = require('mongoose')
 router.get('/',(req,res,next) => {
@@ -38,11 +39,43 @@ router.get('/',(req,res,next) => {
 })
 
 router.post('/',(req,res,next) => {
+    // const rules = Joi.object().keys({
+    //     name: Joi.string().alphanum().min(3).max(30).required(),
+    //     price : Joi.number().required(),
+    //     details: Joi.object({
+    //         size : Joi.number().required()
+    //     }).required(),
+        // details1: Joi.object({
+        //     size : Joi.number().required()
+        // }).required(),
+    //     details1 :Joi.array().items({
+    //         name: Joi.string().required(),
+    //         age: Joi.number().required()
+    //     }).required()
+
+    // })
+
+    // const {error, value} = Joi.validate(req.body, rules, {abortEarly : false})
+    // if(error){
+    //     console.log(value)
+    //     var data = []
+    //     console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    //     console.log(error['details'])
+    //     const errors = {}
+
+    //     error.details.map(error => {
+    //         errors[error.path.join('.')] = error.message
+    //         return null
+    //     })
+        
+    //     console.log(errors)
+    // }else{
+    //     console.log('validation passed')
+    // }
     const product = new Product({
         _id : mongoose.Types.ObjectId(),
         name : req.body.name,
         price : req.body.price
-
     })
     product
         .save()
@@ -60,7 +93,7 @@ router.post('/',(req,res,next) => {
             })
         })
         .catch(err => {
-            console.log(err)
+            // console.log(err)
             res.status(500).json({
                 error : err
             })
