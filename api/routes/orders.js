@@ -6,7 +6,7 @@ const Order = require('../models/order')
 router.get('/', (req, res, next) => {
     Order.find()
         .select('product quantity _id')
-        .populate('product','name') //include price and name
+        .populate('product', 'name') //include price and name
         .exec()
         .then(docs => {
             res.status(200).json({
@@ -66,52 +66,52 @@ router.post('/', (req, res, next) => {
             })
         })
 })
-    
 
 
-router.get('/:orderId',(req,res,next) => {
+
+router.get('/:orderId', (req, res, next) => {
     Order.findById(req.params.orderId)
-    .populate('product','name')
-    .exec()
-    .then(order => {
-        if(!order){
-            return res.status(404).json({
-                message : 'order not found'
-            })
-        }
-        res.status(200).json({
-            order : order,
-            request : {
-                type : 'GET',
-                url : 'http://localhost:3000/orders/'
+        .populate('product', 'name')
+        .exec()
+        .then(order => {
+            if (!order) {
+                return res.status(404).json({
+                    message: 'order not found'
+                })
             }
+            res.status(200).json({
+                order: order,
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/orders/'
+                }
+            })
         })
-    })
-    .catch(err => {
-        res.status(500).json({
-            error : err
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
         })
-    })
 })
 
-router.delete('/:orderId',(req,res,next) => {
-    Order.remove({_id : req.params.orderId})
-    .exec()
-    .then(result => {
-        res.status(200).json({
-            message : 'order deleted',
-            request : {
-                type : 'Post',
-                url : 'http://localhost:3000/orders/',
-                body : {productId : 'ID',quantity : 'Number'}
-            }
+router.delete('/:orderId', (req, res, next) => {
+    Order.remove({ _id: req.params.orderId })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                message: 'order deleted',
+                request: {
+                    type: 'Post',
+                    url: 'http://localhost:3000/orders/',
+                    body: { productId: 'ID', quantity: 'Number' }
+                }
+            })
         })
-    })
-    .catch(err => {
-        res.status(500).json({
-            error : err
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
         })
-    })
 })
 
 module.exports = router;
