@@ -13,6 +13,7 @@ db.once('open', function () {
 })
 mongoose.Promise = global.Promise
 //for logging
+app.use('/uploads',express.static('uploads')) //make folder available to public
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended : false}))
 app.use(bodyParser.json())
