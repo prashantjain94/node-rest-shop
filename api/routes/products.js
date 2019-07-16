@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
+const mongoose = require('mongoose')
 const Joi = require('@hapi/joi');
 const Product = require('../models/product')
-const mongoose = require('mongoose')
 const multer = require('multer')
 
 const storage = multer.diskStorage({

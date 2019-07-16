@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const productRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
+const userRoutes = require('./api/routes/users')
 mongoose.connect('mongodb+srv://prashant_jain:prashant_jain@node-rest-shop-fuyj9.mongodb.net/node-rest-shop-test?retryWrites=true&w=majority',{ useNewUrlParser: true})
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -32,7 +33,7 @@ app.use((req,res,next) => {
 //Routes which should handle requests
 app.use('/products',productRoutes)
 app.use('/orders',orderRoutes)
- 
+app.use('/users',userRoutes)
 //ERROR HANDLING
 app.use((req,res,next) => {
     const error = new Error('NOT FOUND');
