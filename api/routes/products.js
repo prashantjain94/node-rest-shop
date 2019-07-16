@@ -3,9 +3,35 @@ const router = express.Router()
 const Joi = require('@hapi/joi');
 const Product = require('../models/product')
 const mongoose = require('mongoose')
+const multer = require('multer')
+
+const storage = multer.diskStorage({
+    destination : function(req,file,cb){
+        cb(null,'./uploads/')
+    },
+    filename : function (req,file,cb){
+        cb(null,Date.now() + file.originalname)
+    }
+})
+const fileFilter = (req,file,cb) => {
+    //reject a file
+    if(file.mimetype == 'image/jpeg' || file.mimetype == 'image/png'){
+        cb(null,true)
+    }
+    else{
+        cb(null,false)
+    }
+}
+const upload = multer({
+    storage : storage,
+    limits :{
+    fileSize : 1024 * 1024 * 5 
+    },
+    fileFilter :fileFilter
+})
 router.get('/',(req,res,next) => {
     Product.find()
-    .select('name price _id') //to select particular fields
+    .select('name price _id productImage') //to select particular fields
     .exec()
     .then(docs => {
         const response = {
@@ -14,6 +40,7 @@ router.get('/',(req,res,next) => {
                 return {
                     name : doc.name,
                     price : doc.price,
+                    productImage : doc.productImage,
                     _id : doc._id,
                     request : {
                         type : 'GET',
@@ -38,44 +65,13 @@ router.get('/',(req,res,next) => {
     })
 })
 
-router.post('/',(req,res,next) => {
-    // const rules = Joi.object().keys({
-    //     name: Joi.string().alphanum().min(3).max(30).required(),
-    //     price : Joi.number().required(),
-    //     details: Joi.object({
-    //         size : Joi.number().required()
-    //     }).required(),
-        // details1: Joi.object({
-        //     size : Joi.number().required()
-        // }).required(),
-    //     details1 :Joi.array().items({
-    //         name: Joi.string().required(),
-    //         age: Joi.number().required()
-    //     }).required()
-
-    // })
-
-    // const {error, value} = Joi.validate(req.body, rules, {abortEarly : false})
-    // if(error){
-    //     console.log(value)
-    //     var data = []
-    //     console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>')
-    //     console.log(error['details'])
-    //     const errors = {}
-
-    //     error.details.map(error => {
-    //         errors[error.path.join('.')] = error.message
-    //         return null
-    //     })
-        
-    //     console.log(errors)
-    // }else{
-    //     console.log('validation passed')
-    // }
+router.post('/',upload.single('productImage'),(req,res,next) => {
+    // console.log(req.file)
     const product = new Product({
         _id : mongoose.Types.ObjectId(),
         name : req.body.name,
-        price : req.body.price
+        price : req.body.price,
+        productImage : req.file.path
     })
     product
         .save()
@@ -104,7 +100,7 @@ router.post('/',(req,res,next) => {
 router.get('/:productId', (req, res, next) => {
     const id = req.params.productId
     Product.findById(id)
-    .select('name price _id ')
+    .select('name price _id productImage')
         .then(doc => {
             console.log(doc)
             if(doc){
