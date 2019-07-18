@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Joi = require('@hapi/joi');
 const Product = require('../models/product')
 const multer = require('multer')
-
+const checkAuth = require('../middleware/check-auth')
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/')
@@ -49,13 +49,7 @@ router.get('/', (req, res, next) => {
                     }
                 })
             }
-            // if (docs.length >= 0) {
             res.status(200).json(response)
-            // }else{
-            //     req.status(404).json({
-            //         message : 'No entries found'
-            //     })
-            // }
         })
         .catch(err => {
             console.log(err)
@@ -65,13 +59,13 @@ router.get('/', (req, res, next) => {
         })
 })
 
-router.post('/', upload.single('productImage'), (req, res, next) => {
+router.post('/',checkAuth,upload.single('productImage'),(req, res, next) => {
     // console.log(req.file)
     const product = new Product({
         _id: mongoose.Types.ObjectId(),
         name: req.body.name,
         price: req.body.price,
-        productImage: req.file.path
+        productImage: req.file && req.file.path ? req.file.path : null
     })
     product
         .save()
@@ -122,7 +116,7 @@ router.get('/:productId', (req, res, next) => {
 })
 
 
-router.patch('/:productId', (req, res, next) => {
+router.patch('/:productId',checkAuth, (req, res, next) => {
     const id = req.params.productId
     // const updateOps = {}
     // for (const key of Object.keys(req.body)) {
@@ -150,7 +144,7 @@ router.patch('/:productId', (req, res, next) => {
         })
 })
 
-router.delete('/:productId', (req, res, next) => {
+router.delete('/:productId',checkAuth, (req, res, next) => {
     const id = req.params.productId
     Product.remove({
         _id: id
